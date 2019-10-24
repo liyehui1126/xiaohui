@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>面积图</title>
+    <script src="https://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.js"></script>
+    <link rel="stylesheet" href="https://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container" style="margin-top:10px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <h4>
+                    面积堆积图
+                    <input value="刷新" class="btn btn-primary pull-right" style="border:none;" onclick="refresh()"></h4>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div id="box" style="width:1100px;height:400px;"></div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var xArray = [];
+    var heat1Array = [];
+    var heat2Array = [];
+    var heat3Array = [];
+    var allArray = [];
+
+    var myChart = echarts.init(document.getElementById('box'));
+    var option;
+
+
+    // 获取数据并显示
+    function showData() {
+        $.ajax({
+            url: "http://localhost:8081/api/stat/hottime/get?programId=33711434",
+            type: "GET",//请求方式为get
+            dataType: "json", //返回数据格式为json
+            async: false,//设置为同步操作就可以给全局变量赋值成功
+            success: function (object) {//请求成功完成后要执行的方法
+                var data = object.data.echartData;
+                $.each(data, function (i, item) {
+                    if ("all" in item) {
+                        allArray.push(item.all);
+                    } else {
+                        allArray.push(0);
+                    }
+                    if ("heat1" in item) {
+                        heat1Array.push(item.heat1);
+                    } else {
+                        heat1Array.push(0);
+                    }
+                    if ("heat2" in item) {
+                        heat2Array.push(item.heat2);
+                    } else {
+                        heat2Array.push(0);
+                    }
+                    if ("heat3" in item) {
+                        heat3Array.push(item.heat3);
+                    } else {
+                        heat3Array.push(0);
+                    }
+                    xArray.push(item.x);
+                });
+                // console.log(data.length);
+                // console.log(allArray.length);
+                // console.log(heat1Array.length);
+                // console.log(heat2Array.length);
+                // console.log(heat3Array.length);
+            }
+        });
+        option = {
+            title: {
+                text: '自定义图表',
+                subtext: '用于测试'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['数据1', '数据2', '数据3', '数据4']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    mark: {
+                        show: true,
+                        title: {
+                            mark: '辅助线-开关',
+                            markUndo: '辅助线-删除',
+                            markClear: '辅助线-清空'
+                        },
+                        lineStyle: {
+                            width: 1,
+                            color: '#1e90ff',
+                            type: 'dashed'
+                        }
+                    },
+                    dataZoom: {
+                        show: true,
+                        title: {
+                            dataZoom: '区域缩放',
+                            dataZoomReset: '区域缩放-后退'
+                        }
+                    },
+                    dataView: {
+                        show: true,
+                        readOnly: true,
+                        lang: ['数据视图', '关闭', '刷新'],
+                        optionToContent: function (opt) {
+                            var axisData = opt.xAxis[0].data;
+                            var series = opt.series;
+                            var table = '<table style="width:100%;text-align:center"><tbody><tr>'
+                                + '<td>时间</td>'
+                                + '<td>' + series[0].name + '</td>'
+                                + '<td>' + series[1].name + '</td>'
+                                + '</tr>';
+                            for (var i = 0, l = axisData.length; i < l; i++) {
+                                table += '<tr>'
+                                    + '<td>' + axisData[i] + '</td>'
+                                    + '<td>' + series[0].data[i] + '</td>'
+                                    + '<td>' + series[1].data[i] + '</td>'
+                                    + '</tr>';
+                            }
+                            table += '</tbody></table>';
+                            return table;
+                        }
+                    },
+                    magicType: {
+                        show: true,
+                        title: {
+                            line: '动态类型切换-折线图',
+                            bar: '动态类型切换-柱形图',
+                            stack: '动态类型切换-堆积',
+                            tiled: '动态类型切换-平铺'
+                        },
+                        type: ['line', 'bar', 'stack', 'tiled']
+                    },
+                    restore: {
+                        show: true,
+                        title: '还原',
+                        color: 'black'
+                    },
+                    saveAsImage: {
+                        show: true,
+                        title: '保存为图片',
+                        type: 'jpeg'
+                    }
+                }
+            },
+            calculable: true,
+            dataZoom: {
+                show: true,
+                start: 0,
+                end: 100
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    boundaryGap: false,
+                    axisLine: {
+                        onZero: false
+                    },
+                    // 数据显示
+                    data: xArray
+                }
+            ],
+            yAxis: [
+                {
+                    name: '数值',
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: '数据1',
+                    type: 'line',
+                    smooth: true,
+                    itemStyle: {
+                        normal: {
+                            areaStyle: {
+                                type: 'default',
+                                color: 'rgb(218,208,238)'
+                            }
+                        }
+                    },
+                    // 数据显示
+                    data: allArray
+                },
+                {
+                    name: '数据2',
+                    type: 'line',
+                    smooth: true,
+                    itemStyle: {
+                        normal: {
+                            areaStyle: {
+                                type: 'default',
+                                color: '#de0000'
+                            }
+                        }
+                    },
+                    // 数据显示
+                    data: heat1Array
+                },
+                {
+                    name: '数据3',
+                    type: 'line',
+                    smooth: true,
+                    itemStyle: {
+                        normal: {
+                            areaStyle: {
+                                type: 'default',
+                                color: '#abc327'
+                            }
+                        }
+                    },
+                    // 数据显示
+                    data: heat2Array
+                },
+                {
+                    name: '数据4',
+                    type: 'line',
+                    smooth: true,
+                    itemStyle: {
+                        normal: {
+                            areaStyle: {
+                                type: 'default',
+                                color: '#dfb5b7'
+                            }
+                        }
+                    },
+                    // 数据显示
+                    data: heat3Array
+                },
+            ]
+        };
+        myChart.setOption(option);
+    }
+
+    // 刷新
+    function refresh() {
+        // 先将原有数据清空、再获取数据并显示
+        if (timeArray.length > 0 || heat1Array.length > 0 || heat2Array.length > 0 || heat3Array.length > 0) {
+            timeArray = [];
+            heat1Array = [];
+            heat2Array = [];
+            heat3Array = [];
+
+        }
+        showData();
+        //检测数据刷新功能
+        // console.log("已刷新");
+    }
+
+    showData();
+</script>
+</html>

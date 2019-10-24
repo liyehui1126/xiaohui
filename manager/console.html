@@ -1,0 +1,506 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>控制台</title>
+    <link rel="shortcut icon" href="../assets/image/zjicm.ico" type="image/x-icon">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <!-- basic styles -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+
+
+    <link rel="stylesheet" href="../assets/font-awesome-4.7.0/css/font-awesome.min.css"/>
+
+    <link rel="stylesheet" href="../assets/font-awesome-4.7.0/css/font-awesome-animation.css"/>
+
+    <!-- ace 样式 -->
+
+    <link rel="stylesheet" href="../assets/css/ace.min.css"/>
+    <link rel="stylesheet" href="../assets/css/ace-rtl.min.css"/>
+    <link rel="stylesheet" href="../assets/css/ace-skins.min.css"/>
+
+
+    <!-- ace settings handler -->
+
+    <script src="../assets/js/ace-extra.min.js"></script>
+
+
+    <script src="../assets/jquery/jquery.min.js"></script>
+    <script src="../assets/jquery/jquery.timers.min.js"></script>
+
+    <script src="../assets/common/extends.js"></script>
+
+
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+
+
+    <script src="../assets/jquery/jquery.easy-pie-chart.min.js"></script>
+
+    <script src="../assets/select2-master/dist/js/select2.full.min.js"></script>
+
+    <link href="../assets/select2-master/dist/css/select2.min.css" rel="stylesheet"/>
+
+    <link
+            href="../assets/bootstrap-switch-master/dist/css/bootstrap3/bootstrap-switch.css"
+            rel="stylesheet">
+    <script
+            src="../assets/bootstrap-switch-master/dist/js/bootstrap-switch.js"></script>
+
+
+    <script src="../assets/sweetalert/sweetalert2.all.min.js"></script>
+    <link href="../assets/sweetalert/sweetalert2.css" rel="stylesheet"/>
+
+</head>
+
+
+<body>
+
+<div class="main-container">
+    <div class="page-content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="alert alert-block alert-success">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <i class="ace-icon fa fa-times"></i>
+                    </button>
+
+                    <i class="ace-icon fa fa-check green"></i>
+
+                    欢迎使用视听节目收视研究系统
+                    <strong class="green">
+                        管理系统
+                        <small>(v1.0.0.0)</small>
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="space-6"></div>
+
+            <div class="col-sm-12 infobox-container">
+                <div class="infobox infobox-green">
+                    <div class="infobox-icon">
+                        <i class="ace-icon fa fa-user"></i>
+                    </div>
+
+                    <div class="infobox-data">
+                        <span class="infobox-data-number" id="userCount"><i
+                                class="fa fa-spinner faa-spin animated"></i></span>
+                        <div class="infobox-content">当前注册人数</div>
+                    </div>
+                </div>
+
+                <div class="infobox infobox-blue">
+                    <div class="infobox-icon">
+                        <i class="ace-icon fa fa-tasks"></i>
+                    </div>
+
+                    <div class="infobox-data">
+                        <span class="infobox-data-number" id="taskCount"><i
+                                class="fa fa-spinner faa-spin animated"></i></span>
+                        <div class="infobox-content">已添加任务数量</div>
+                    </div>
+                </div>
+                Co
+
+                <div class="infobox infobox-green2">
+                    <div class="infobox-icon">
+                        <i class="ace-icon fa fa-area-chart"></i>
+                    </div>
+
+                    <div class="infobox-data">
+                        <span class="infobox-data-number" id="taskStatus"><i
+                                class="fa fa-spinner faa-spin animated"></i></span>
+                        <div class="infobox-content">当前定时任务状态</div>
+                    </div>
+                </div>
+
+                <div class="infobox infobox-pink">
+                    <div class="infobox-icon">
+                        <i class="ace-icon fa fa-clock-o"></i>
+                    </div>
+
+                    <div class="infobox-data">
+                        <span class="infobox-data-number" id="lastExecTime"><i
+                                class="fa fa-spinner faa-spin animated"></i></span>
+                        <div class="infobox-content">上次执行时间</div>
+                    </div>
+                </div>
+
+                <div class="infobox infobox-red  ">
+                    <div class="infobox-icon">
+                        <i class="ace-icon fa fa-file-text-o"></i>
+
+                    </div>
+
+                    <div class="infobox-data">
+                        <span class="infobox-data-number" id="logCount"><i
+                                class="fa fa-spinner faa-spin animated"></i></span>
+                        <div class="infobox-content">单次日志数量</div>
+                    </div>
+                </div>
+
+
+                <div class="space-6"></div>
+
+                <div class="infobox infobox-green infobox-small infobox-dark">
+                    <div class="infobox-progress">
+                        <div id="disk" class="easy-pie-chart percentage" data-percent="61" data-size="39">
+                            <span class="percent" id="per_disk">0</span>%
+                        </div>
+                    </div>
+
+                    <div class="infobox-data">
+                        <div class="infobox-content">存储空间</div>
+                        <div class="infobox-content" id="avaDisk">剩余</div>
+                    </div>
+                </div>
+
+                <div class="infobox infobox-blue infobox-small infobox-dark">
+                    <div class="infobox-progress">
+                        <div id="ram" class="easy-pie-chart percentage" data-percent="61" data-size="39">
+                            <span class="percent" id="per_ram">0</span>%
+                        </div>
+                    </div>
+
+                    <div class="infobox-data">
+                        <div class="infobox-content">内存空间</div>
+                        <div class="infobox-content" id="avaRam">0</div>
+                    </div>
+                </div>
+
+                <div class="space-6"></div>
+
+
+            </div>
+
+            <div class="vspace-sm"></div>
+
+
+        </div>
+
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <div class="widget-box">
+                    <div class="widget-header">
+                        <h4 class="widget-title lighter">
+                            <i class="ace-icon fa fa-star orange"></i>
+                            数据计算线程</h4>
+
+                        <div class="widget-toolbar">
+                            <a href="#" data-action="collapse">
+                                <i class="ace-icon fa fa-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="widget-body">
+                        <div class="widget-main">
+
+                            <div id="progress" class="progress pos-rel progress-striped active"
+                                 data-percent="距离下次计算任务时间剩下">
+                                <div class="progress-bar" style="width:100%;"></div>
+                            </div>
+
+
+                            <hr/>
+
+
+                            <div>
+                                <label for="ck_switch">开关</label>
+                                <br/>
+                                <input type="checkbox" id="ck_switch" data-size="mini">
+                            </div>
+                            <hr>
+
+                            <div>
+                                <label for="select_timer">计算定时时间设置</label>
+
+                                <br/>
+                                <select class="chosen-select form-control" id="select_timer"
+                                        data-placeholder="Choose a State...">
+                                    <option value="1">每30分钟</option>
+                                    <option value="2">每小时</option>
+                                    <option value="3">每3小时</option>
+                                    <option value="4">每一天</option>
+                                    <option value="5">每一周</option>
+
+
+                                </select>
+                            </div>
+                            <hr>
+                            <button type="button" onclick="pageJS.immExec()" class="btn btn-info btn-sm">
+                                立即执行
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+<script src="../assets/jquery/jquery.formatDateTime.min.js"></script>
+
+
+<script>
+    pageJS = {
+
+        initSysInfo: function () {
+            xaja("/sys/info").success(function (data) {
+
+
+                var avaRam = data.avaRam;
+                var totalDisk = data.totalDisk;
+                var avaDisk = data.avaDisk;
+                var totalRam = data.totalRam;
+
+
+                var per_ram = (100 - (avaRam * 100 / totalRam)).toFixed(1);
+                var per_disk = (100 - (avaDisk * 100 / totalDisk)).toFixed(1);
+
+
+                $("#per_ram").html(per_ram);
+                $("#per_disk").html(per_disk);
+
+                $("#avaRam").html("余:" + avaRam.toFixed(1) + "GB");
+                $("#avaDisk").html("余:" + avaDisk.toFixed(1) + "GB");
+
+                $("#ram").attr("data-percent", per_ram);
+                $("#disk").attr("data-percent", per_disk);
+
+                $('.easy-pie-chart.percentage').each(function () {
+                    var $box = $(this).closest('.infobox');
+                    var barColor = $(this).data('color') || (!$box.hasClass('infobox-dark') ? $box.css('color') : 'rgba(255,255,255,0.95)');
+                    var trackColor = barColor == 'rgba(255,255,255,0.95)' ? 'rgba(255,255,255,0.25)' : '#E2E2E2';
+                    var size = parseInt($(this).data('size')) || 50;
+                    $(this).easyPieChart({
+                        barColor: barColor,
+                        trackColor: trackColor,
+                        scaleColor: false,
+                        lineCap: 'butt',
+                        lineWidth: parseInt(size / 10),
+                        animate: /msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase()) ? false : 1000,
+                        size: size
+                    });
+                })
+
+            }).get();
+        },
+
+        initSingle: function () {
+            xaja("/sys/more").success(function (data) {
+
+
+                if (data.lastExecTime) {
+                    data.lastExecTime = TimeUtils.getDateDiff(data.lastExecTime);
+                    if (data.taskStatus == 0) {
+                        data.taskStatus = "停止"
+                    } else {
+                        data.taskStatus = "正常"
+                    }
+                } else {
+                    data.lastExecTime = "暂无";
+                }
+
+
+                FormUtils().autoLoadHTMLById(data);
+
+                // $("#userCount").html(data.userCount);
+                // $("#activeSum").html(data.activeSum);
+                // $("#consumeSum").html(data.consumeSum);
+                // $("#paySum").html(data.paySum);
+                // $("#giveSum").html(data.giveCount);
+
+
+            }).get();
+
+        },
+
+
+        init: function () {
+            var _this = this;
+
+            xaja_config.setGlobalToken();
+            xaja_config.successTipPlugin = function (ret) {
+                swal(
+                    '执行结果',
+                    ret.msg,
+                    'success'
+                )
+            }
+
+
+            $ck_switch = $("#ck_switch");
+            $select_timer = $("#select_timer");
+
+            $select_timer.select2(
+                {
+                    minimumResultsForSearch: Infinity,
+                }
+            );
+
+            $select_timer.on("select2:select", function (e) {
+                xaja("/job/timer/exec").data({
+                    timerId: e.params.data.id
+                }).success2(function (data) {
+                    _this.loadTimer();
+                    swal(
+                        '执行结果',
+                        data.msg,
+                        'success'
+                    )
+                }).get();
+
+
+            });
+
+
+            $ck_switch.bootstrapSwitch();
+            $ck_switch.on('switchChange.bootstrapSwitch', function (event, state) {
+
+                if (state) {
+
+                    xaja("/job/timer/exec").success(function () {
+                        _this.loadTimer();
+
+                    }).get();
+
+                } else {
+                    xaja("/job/timer/stop").success(function () {
+                        _this.loadTimer();
+
+                    }).get();
+                }
+
+            });
+
+
+            this.loadTimer();
+
+            xaja("/job/status").success(function (data) {
+                if (data) {
+                    if (data == 0) {
+
+                    } else {
+                        $("#progress").attr("data-percent", "计算任务正在进行...");
+
+                    }
+                } else {
+
+                }
+
+            }).get()
+
+
+        },
+
+
+        loadTimer: function () {
+            xaja("/job/timer/gethread").success(function (data) {
+                if (data) {
+                    //已经启动
+                    $ck_switch.bootstrapSwitch('state', true, true);
+
+
+                } else {
+
+                    $ck_switch.bootstrapSwitch('state', false, true);
+
+                }
+            }).get();
+
+
+            xaja("/job/timer/get").success(function (data) {
+                $select_timer.val(data).trigger("change");
+            }).get();
+
+            xaja("/job/timer/next").success(function (data) {
+
+                $("#progress").attr("data-percent", "下次计算任务时间   :  " + data);
+
+
+            }).get();
+
+
+        },
+
+
+        immExec: function () {
+            xaja("/job/exec/imm").get();
+        }
+
+
+    }
+
+
+    var $ck_switch, $select_timer;
+
+    $(function () {
+        // pageJS.initWordCloud();
+        pageJS.init();
+        pageJS.initSingle();
+
+        pageJS.initSysInfo();
+        // pageJS.initUserFB();
+
+
+    });
+
+    document.write("<script src='../assets/js/ace-elements.min.js'>" + "<" + "/script>");
+    document.write("<script src='../assets/js/ace.min.js'>" + "<" + "/script>");
+</script>
+
+
+<script>
+    var websocket = null;
+    if ('WebSocket' in window) {
+        websocket = new WebSocket(AVRGlobal.socketUrl);
+    } else {
+        alert('该浏览器不支持websocket!');
+    }
+
+    websocket.onopen = function (event) {
+        console.log('建立连接');
+    }
+
+    websocket.onclose = function (event) {
+        console.log('连接关闭');
+    }
+
+    websocket.onmessage = function (event) {
+        var data = JSON.parse(event.data);
+
+        if (data.type == 1) {
+
+            if (data.message == "start") {
+                $("#progress").attr("data-percent", "计算任务正在进行...");
+
+            } else if (data.message == "stop") {
+
+                pageJS.loadTimer();
+            }
+
+
+        }
+    }
+
+    websocket.onerror = function () {
+        alert('websocket通信发生错误！');
+    }
+
+    window.onbeforeunload = function () {
+        websocket.close();
+    }
+
+</script>
+</body>
+</html>
+

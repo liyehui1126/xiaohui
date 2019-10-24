@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../assets/image/zjicm.ico" type="image/x-icon">
+
+    <title>视听节目收视研究系统|数据分析</title>
+    <script src="../assets/jquery/jquery-2.0.3.min.js"></script>
+    <script src="../assets/common/extends.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <link href="../assets/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+
+    <script src="../assets/echarts/echarts.min.js"></script>
+
+</head>
+
+
+<body>
+
+
+<div id="main_perhour" style="width: 100%;height:500px;"></div>
+
+<div id="main_hotvideo" style="width: 100%;height:1000px;"></div>
+
+<br><br><br><br><br>
+
+</body>
+
+
+<script>
+    var chart_perhour = echarts.init(document.getElementById('main_perhour'));
+    option_perhour = {
+        title: {
+            text: '一天浏览总人数分布',
+            subtext: '数据来自华数集团'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+
+        toolbox: {
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: false},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: [],
+            name: '24小时时间轴',
+            axisLabel: {
+                formatter: function (value, index) {
+                    return value + "时";
+                }
+            }
+        },
+        yAxis: {
+            type: 'value',
+            name: "次数"
+
+        },
+        series: [
+            {
+                name: '播放人数',
+                type: 'line',
+                data: [],
+                markPoint: {
+                    data: [
+                        {type: 'max', name: '最大值'},
+                        {type: 'min', name: '最小值'}
+                    ]
+                },
+                markLine: {
+                    data: [
+                        {type: 'average', name: '平均值'}
+                    ]
+                }
+            }
+        ]
+    };
+    chart_perhour.setOption(option_perhour);
+
+
+    var chart_hotvideo = echarts.init(document.getElementById('main_hotvideo'));
+
+    option_hotvideo = {
+        title: {
+            text: '热门节目排行榜前30',
+            subtext: '数据来自华数集团'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value',
+            boundaryGap: [0, 0.01],
+            name: '次数'
+
+        },
+        yAxis: {
+            name: '节目名称',
+            type: 'category',
+            data: []
+        },
+        series: [
+            {
+                name: '播放量',
+                type: 'bar',
+                data: []
+            }
+        ]
+    };
+
+    chart_hotvideo.setOption(option_hotvideo);
+
+</script>
+
+<script>
+    $(function () {
+        $("body").prepend("<nav class=\"navbar navbar-default\" role=\"navigation\">\n" +
+            "\n" +
+            "</nav>");
+        $(".navbar").load("head.html");
+        $("body").append("<footer class=\"footer navbar-fixed-bottom\">\n" +
+            "</footer>");
+        $(".footer").load('foot.html');
+    });
+
+</script>
+<script>
+    PageJS = {
+        init: function () {
+
+            $("#hottimeModal").modal("show");
+
+
+            xaja("/stat/perhour/list").success(function (data) {
+                option_perhour.xAxis.data = data.xAxis;
+                option_perhour.series[0].data = data.series;
+                chart_perhour.setOption(option_perhour);
+
+            }).get();
+
+
+            xaja("/stat/hotvideo/get").success(function (data) {
+                option_hotvideo.yAxis.data = data.yAxis.reverse();
+                option_hotvideo.series[0].data = data.series.reverse();
+                chart_hotvideo.setOption(option_hotvideo);
+
+            }).get();
+
+
+        }
+
+    }
+    $(function () {
+
+        PageJS.init();
+
+    });
+</script>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="shortcut icon" href="../assets/image/zjicm.ico" type="image/x-icon">
+
+    <title>管理平台-登录页面</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- basic styles -->
+    <script src="../assets/jquery/jquery.min.js"></script>
+    <script src="../assets/jquery/jquery.md5.js"></script>
+
+    <script src="../assets/jquery/jquery.cookie.js"></script>
+
+    <script src="../assets/jquery/jquery.form.js"></script>
+    <script src="../assets/common/extends.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="../assets/sweetalert/sweetalert2.all.min.js"></script>
+    <link href="../assets/sweetalert/sweetalert2.css" rel="stylesheet"/>
+
+
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../assets/css/font-awesome.min.css"/>
+
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="../assets/css/font-awesome-ie7.min.css"/>
+    <![endif]-->
+
+    <!-- page specific plugin styles -->
+
+    <!-- ace styles -->
+
+    <link rel="stylesheet" href="../assets/css/ace.min.css"/>
+    <link rel="stylesheet" href="../assets/css/ace-rtl.min.css"/>
+    <link rel="stylesheet" href="../assets/bootstrap/css/ladda-themeless.min.css"/>
+    <script src="../assets/bootstrap/js/spin.min.js"></script>
+    <script src="../assets/bootstrap/js/ladda.min.js"></script>
+
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="../assets/css/ace-ie.min.css"/>
+    <![endif]-->
+
+    <!-- inline styles related to this page -->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+    <!--[if lt IE 9]>
+    <script src="../assets/js/html5shiv.js"></script>
+    <script src="../assets/js/respond.min.js"></script>
+    <![endif]-->
+
+    <script>
+        //在被挤掉登录的时候，跳出嵌套
+        if ($(parent.document).find("meta[name='keywords']").attr("content") == "HOME") {
+            parent.window.location.reload(true);
+        }
+    </script>
+</head>
+
+<body class="login-layout">
+<div class="main-container">
+    <div class="main-content">
+        <div class="row">
+            <div class="col-sm-10 col-sm-offset-1">
+                <div class="login-container" style="width: 550px">
+                    <div class="center">
+                        <h1>
+                            <img src="../assets/image/zjicm.png" width="80"/>
+                            <span class="red">视听节目收视研究系统</span>
+                            <span class="white">管理系统</span>
+                        </h1>
+                        <h4 class="blue">&copy; 浙江传媒学院</h4>
+                    </div>
+
+                    <div class="space-6"></div>
+
+                    <div class="position-relative">
+                        <div style="width: 550px;" id="login-box" class="login-box visible widget-box no-border">
+                            <div class="widget-body">
+                                <div class="widget-main">
+                                    <h4 class="header blue lighter bigger">
+                                        <i class="icon-coffee green"></i>
+                                        请输入管理员账号和密码
+                                    </h4>
+
+                                    <div class="space-6"></div>
+
+                                    <form method="post" id="form">
+                                        <fieldset>
+                                            <label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+															<input type="text" class="form-control" name="username"
+                                                                   placeholder="请输入管理员账户名" value="admin"/>
+															<i class="icon-user"></i>
+														</span>
+                                            </label>
+
+                                            <label class="block clearfix">
+														<span class="block input-icon input-icon-right">
+															<input type="password" class="form-control"
+                                                                   placeholder="请输入管理员密码" value="admin"
+                                                                   name="password"/>
+															<i class="icon-lock"></i>
+														</span>
+                                            </label>
+
+                                            <div class="space"></div>
+
+                                            <div class="clearfix">
+
+
+                                                <!--<button type="button"-->
+                                                <!--class="width-35 pull-right btn btn-sm btn-primary" >-->
+                                                <!--<i class="icon-key"></i>-->
+                                                <!--登录-->
+                                                <!--</button>-->
+                                                <button class="width-35 pull-right btn btn-sm btn-primary ladda-button"
+                                                        type="button"
+                                                        id="btn_login"
+                                                        data-style="expand-left">
+                                                    <span class="ladda-label">登录</span></button>
+
+                                            </div>
+
+                                            <div class="space-4"></div>
+                                        </fieldset>
+                                    </form>
+
+
+                                </div><!-- /widget-main -->
+
+
+                            </div><!-- /widget-body -->
+                        </div><!-- /login-box -->
+
+
+                    </div><!-- /position-relative -->
+                </div>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div>
+</div><!-- /.main-container -->
+
+<!-- basic scripts -->
+
+<!--[if !IE]> -->
+
+
+<script>
+    PageJS = {
+        init: function () {
+
+
+            $("#form").attr("action", AVRGlobal.apiUrl + "/auth/login");
+
+
+            $('#btn_login').click(function (e) {
+
+
+                var l = Ladda.create(document.getElementById("btn_login"));
+
+                var rowPass = $("input[name='password']").val();
+
+                var username = $("input[name='username']").val();
+
+                var data = {
+                    username: username,
+                    password: rowPass
+                }
+
+                xaja("/auth/login").data(JSON.stringify(data)).before(function () {
+                    l.start();
+                    //密码MD5
+
+                }).success(function (data) {
+
+                    //设置头
+                    document.cookie = "token" + "=" + "Bearer" + data
+
+                    window.location.replace("index.html");
+
+                }).after(function () {
+                    l.stop();
+                }).post();
+
+                // xaja($("form")).before(function () {
+                //     l.start();
+                //     //密码MD5
+                //     var rowPass = $("input[name='password']").val();
+                //     $("input[name='password']").val($.md5(rowPass));
+                //
+                // }).success2(function (data) {
+                //
+                //     console.info(data);
+                //     //  window.location.replace("index.html");
+                //
+                //
+                // }).after(function () {
+                //     l.stop();
+                // }).form();
+
+            });
+
+
+        },
+
+    }
+
+
+</script>
+
+<script>
+    $(function () {
+
+        PageJS.init();
+
+    });
+
+
+</script>
+
+</body>
+</html>

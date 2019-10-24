@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../assets/image/zjicm.ico" type="image/x-icon">
+
+    <title>视听节目收视研究系统|首页</title>
+    <script src="../assets/jquery/jquery-2.0.3.min.js"></script>
+    <script src="../assets/common/extends.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <link href="../assets/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="../assets/revolution_slider/css/rs-style.css" media="screen">
+    <link rel="stylesheet" href="../assets/revolution_slider/rs-plugin/css/settings.css" media="screen">
+    <script type="text/javascript"
+            src="../assets/revolution_slider/rs-plugin/js/jquery.themepunch.plugins.min.js"></script>
+    <script type="text/javascript"
+            src="../assets/revolution_slider/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
+
+
+    <style>
+        /*slider css*/
+        .main-slider {
+            background: #af2d2e;
+            color: #fff;
+
+            z-index: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slider-colored {
+            z-index: 1;
+            position: relative;
+            border-top: solid 1px #eee;
+            border-bottom: solid 1px #eee;
+        }
+
+        .slide_title {
+            font-weight: 300;
+            color: #FFFFFF;
+            text-transform: uppercase;
+            font_weight: bolder;
+            font-size: 35px;
+            font-family: 'Fjalla One', sans-serif;
+        }
+
+        .slide_subtitle {
+            font-family: 'Open Sans';
+            font-weight: 400;
+            padding: 5px;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 18px;
+        }
+
+        .slide_list_item {
+            font-family: 'Open Sans';
+            font-weight: 400;
+            padding: 5px;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        .slide_desc {
+            color: #fff;
+            font-size: 14px;
+            line-height: 24px;
+            font-weight: lighter;
+        }
+
+        .slide_desc_bordered {
+            border-left: 3px solid #ddd !important;
+            padding-left: 5px;
+        }
+
+        .slide_btn {
+            font-family: 'Open Sans';
+            font-weight: 300;
+            background: #f5b851;
+            padding: 15px 20px;
+            color: #fff;
+            font-size: 14px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .slide_btn:hover, .slide_btn:focus {
+            font-family: 'Open Sans';
+            font-weight: 300;
+            background: #e77368;
+            padding: 15px 20px;
+            color: #fff;
+            font-size: 14px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .dark-text {
+            color: #ffffff;
+        }
+
+        .yellow-txt {
+            color: #ffe582;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- revolution slider start -->
+<div class="fullwidthbanner-container main-slider">
+    <div class="fullwidthabnner">
+        <ul id="revolutionul" style="display:none;">
+            <!-- 1st slide -->
+            <li data-transition="fade" data-slotamount="8" data-masterspeed="700" data-delay="9400" data-thumb="">
+                <div class="caption lfl slide_item_left"
+                     data-x="10"
+                     data-y="70"
+                     data-speed="400"
+                     data-start="1500"
+                     data-easing="easeOutBack">
+                    <img src="../assets/image/banner/ban2.png" alt="Image 1">
+                </div>
+                <div class="caption lfr slide_title"
+                     data-x="670"
+                     data-y="120"
+                     data-speed="400"
+                     data-start="1000"
+                     data-easing="easeOutExpo">
+                    政务微博传播影响力分析系统
+                </div>
+
+                <div class="caption lfr slide_subtitle dark-text"
+                     data-x="670"
+                     data-y="190"
+                     data-speed="400"
+                     data-start="2000"
+                     data-easing="easeOutExpo">
+                    多学科多角度结合
+                </div>
+                <div class="caption lfr slide_desc"
+                     data-x="670"
+                     data-y="260"
+                     data-speed="400"
+                     data-start="2500"
+                     data-easing="easeOutExpo">
+                    本系统采用以传播学、社会学、图形学、计算机科学等多学科<br>
+                    相结合的研究视角，并应用先进的大数据挖掘技术及分析系统，<br>
+                    构建了一套完整的政务微博传播影响力分析系统。
+                </div>
+                <a class="caption lfr btn yellow slide_btn" href="#"
+                   data-x="670"
+                   data-y="400"
+                   data-speed="400"
+                   data-start="3500"
+                   data-easing="easeOutExpo">
+                    立刻查看
+                </a>
+
+            </li>
+
+            <!-- 2nd slide  -->
+            <li data-transition="fade" data-slotamount="8" data-masterspeed="700" data-delay="9400" data-thumb="">
+                <!-- THE MAIN IMAGE IN THE FIRST SLIDE -->
+                <img src="../assets/image/banner/banner2_bg.jpg" alt="">
+                <div class="caption lft slide_title"
+                     data-x="10"
+                     data-y="125"
+                     data-speed="400"
+                     data-start="1500"
+                     data-easing="easeOutExpo">
+                    优越的数据可视化体系
+                </div>
+                <div class="caption lft slide_subtitle dark-text"
+                     data-x="10"
+                     data-y="180"
+                     data-speed="400"
+                     data-start="2000"
+                     data-easing="easeOutExpo">
+                    柱状图&折线图&圆环图&雷达图&地图
+                </div>
+                <div class="caption lft slide_desc dark-text"
+                     data-x="10"
+                     data-y="240"
+                     data-speed="400"
+                     data-start="2500"
+                     data-easing="easeOutExpo">
+                    采用新一代的大数据可视化基础库：ECharts作为数据可视化工具<br>
+                    千万级数据可视化的无阻塞体验，让数据更生动，图标更闪耀，<br>
+                    交互更友好，使用更便捷,让您一目了然的看懂数据！
+                </div>
+                <a class="caption lft slide_btn btn red slide_item_left" href="#"
+                   data-x="10"
+                   data-y="360"
+                   data-speed="400"
+                   data-start="3000"
+                   data-easing="easeOutExpo">
+                    立刻查看
+                </a>
+                <div class="caption lft start"
+                     data-x="640"
+                     data-y="55"
+                     data-speed="400"
+                     data-start="2000"
+                     data-easing="easeOutBack">
+                    <img src="../assets/image/banner/visual.png" alt="visual">
+                </div>
+                <div class="caption lft slide_item_right"
+                     data-x="330"
+                     data-y="20"
+                     data-speed="500"
+                     data-start="5000"
+                     data-easing="easeOutBack">
+                    <img src="../assets/image/banner/banner2_tag.png" id="rev-hint2" alt="txt img">
+                </div>
+
+            </li>
+
+            <!-- 3rd slide  -->
+            <li data-transition="fade" data-slotamount="7" data-masterspeed="300" data-delay="9400" data-thumb="">
+                <img src="../assets/image/banner/red-bg.jpg" alt="">
+                <div class="caption lfl slide_item_right"
+                     data-x="10"
+                     data-y="105"
+                     data-speed="1200"
+                     data-start="1500"
+                     data-easing="easeOutBack">
+                    <img src="../assets/image/banner/imac.png" alt="Image 1">
+                </div>
+                <div class="caption lfl slide_item_right"
+                     data-x="25"
+                     data-y="345"
+                     data-speed="1200"
+                     data-start="2000"
+                     data-easing="easeOutBack">
+                    <img src="../assets/image/banner/tab.png" alt="Image 1">
+                </div>
+                <div class="caption lfl slide_item_right"
+                     data-x="200"
+                     data-y="330"
+                     data-speed="1200"
+                     data-start="2500"
+                     data-easing="easeOutBack">
+                    <img src="../assets/image/banner/mobile.png" alt="Image 1">
+                </div>
+                <div class="caption lfl slide_item_right"
+                     data-x="250"
+                     data-y="230"
+                     data-speed="1200"
+                     data-start="3000"
+                     data-easing="easeOutBack">
+                    <img src="../assets/image/banner/laptop.png" alt="Image 1">
+                </div>
+                <div class="caption lfl slide_item_right"
+                     data-x="165"
+                     data-y="30"
+                     data-speed="500"
+                     data-start="5000"
+                     data-easing="easeOutBack">
+                    <img src="../assets/image/banner/text_imac.png" id="rev-hint1" alt="Image 1">
+                </div>
+
+                <div class="caption lfr slide_title slide_item_left yellow-txt"
+                     data-x="670"
+                     data-y="145"
+                     data-speed="400"
+                     data-start="3500"
+                     data-easing="easeOutExpo">
+                    多平台支持
+                </div>
+                <div class="caption lfr slide_subtitle slide_item_left"
+                     data-x="670"
+                     data-y="200"
+                     data-speed="400"
+                     data-start="4000"
+                     data-easing="easeOutExpo">
+                    And Awesome Flat Design
+                </div>
+                <div class="caption lfr slide_desc slide_item_left"
+                     data-x="670"
+                     data-y="280"
+                     data-speed="400"
+                     data-start="4500"
+                     data-easing="easeOutExpo">
+                    Windows、IOS、Android全都支持， <br>
+                    PC、Mac、手机、平板一个不少，<br>
+                    更有专属APP可下载.
+                </div>
+                <a class="caption lft slide_btn btn red slide_item_left" href="#"
+                   data-x="680"
+                   data-y="450"
+                   data-speed="400"
+                   data-start="3000"
+                   data-easing="easeOutExpo">
+                    敬请期待
+                </a>
+
+            </li>
+
+        </ul>
+        <div class="tp-bannertimer tp-top"></div>
+    </div>
+</div>
+<!-- revolution slider end -->
+
+
+</body>
+
+<script>
+    $(function () {
+        $("body").prepend("<nav class=\"navbar navbar-default\" role=\"navigation\">\n" +
+            "\n" +
+            "</nav>");
+        $(".navbar").load("head.html");
+        $("body").append("<footer class=\"footer navbar-fixed-bottom\">\n" +
+            "</footer>");
+        $(".footer").load('foot.html');
+    });
+
+
+</script>
+
+<script>
+    var RevSlide = function () {
+
+        return {
+
+            //Revolution Slider
+            initRevolutionSlider: function () {
+                var api;
+
+                //setTimeout("", 1000);
+                //jQuery('#revolutionul').show();
+
+                api = jQuery('.fullwidthabnner').revolution(
+                    {
+                        delay: 2000,
+                        startheight: 600,
+                        startwidth: 1150,
+
+                        hideThumbs: 10,
+
+                        thumbWidth: 100,                         // Thumb With and Height and Amount (only if navigation Tyope set to thumb !)
+                        thumbHeight: 50,
+                        thumbAmount: 5,
+
+                        navigationType: "bullet",                // bullet, thumb, none
+                        navigationArrows: "solo",                // nexttobullets, solo (old name verticalcentered), none
+
+                        navigationStyle: "round",                // round,square,navbar,round-old,square-old,navbar-old, or any from the list in the docu (choose between 50+ different item), custom
+
+
+                        navigationHAlign: "center",              // Vertical Align top,center,bottom
+                        navigationVAlign: "bottom",              // Horizontal Align left,center,right
+                        navigationHOffset: 0,
+                        navigationVOffset: 20,
+
+                        soloArrowLeftHalign: "left",
+                        soloArrowLeftValign: "center",
+                        soloArrowLeftHOffset: 20,
+                        soloArrowLeftVOffset: 0,
+
+                        soloArrowRightHalign: "right",
+                        soloArrowRightValign: "center",
+                        soloArrowRightHOffset: 20,
+                        soloArrowRightVOffset: 0,
+
+                        touchenabled: "on",                      // Enable Swipe Function : on/off
+                        onHoverStop: "on",                       // Stop Banner Timet at Hover on Slide on/off
+
+                        stopAtSlide: -1,
+                        stopAfterLoops: -1,
+
+                        hideCaptionAtLimit: 0,					// It Defines if a caption should be shown under a Screen Resolution ( Basod on The Width of Browser)
+                        hideAllCaptionAtLilmit: 0,				// Hide all The Captions if Width of Browser is less then this value
+                        hideSliderAtLimit: 0,					// Hide the whole slider, and stop also functions if Width of Browser is less than this value
+
+                        shadow: 1,                               //0 = no Shadow, 1,2,3 = 3 Different Art of Shadows  (No Shadow in Fullwidth Version !)
+                        fullWidth: "on"                          // Turns On or Off the Fullwidth Image Centering in FullWidth Modus
+                    });
+            }
+
+        };
+    }();
+
+
+    RevSlide.initRevolutionSlider();
+
+
+</script>
+</html>

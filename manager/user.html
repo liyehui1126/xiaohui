@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../assets/Guriddo_jqGrid_JS_5.3.0/css/ui.jqgrid.min.css"/>
+    <link href="../assets/css/ace.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../assets/css/jquery-ui.min.css">
+
+
+    <link rel="stylesheet" href="../assets/font-awesome-4.7.0/css/font-awesome.min.css"/>
+
+    <script src="../assets/jquery/jquery.min.js"></script>
+    <script src="../assets/jquery/jquery.cookie.js"></script>
+
+    <script src="../assets/jquery/jquery.formatDateTime.min.js"></script>
+    <script src="../assets/js/ace.min.js"></script>
+
+    <script src="../assets/js/ace-elements.min.js"></script>
+
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+
+
+    <script src="../assets/common/extends.js"></script>
+
+
+    <script src="../assets/Guriddo_jqGrid_JS_5.3.0/js/jquery.jqGrid.min.js"></script>
+    <script src="../assets/Guriddo_jqGrid_JS_5.3.0/js/i18n/grid.locale-cn.js"></script>
+
+    <script src="../assets/sweetalert/sweetalert2.all.min.js"></script>
+    <link href="../assets/sweetalert/sweetalert2.css" rel="stylesheet"/>
+
+    <script src="../assets/bootstrap/js/bootstrapValidator.js"></script>
+
+
+    <style>
+
+
+        body {
+            background-color: #ffffff;
+        }
+
+        .ui-jqgrid .ui-jqgrid-htable th div {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <table id="grid-table">
+            </table>
+            <div id="grid-pager"></div>
+        </div>
+    </div>
+</div>
+
+
+<!--添加用户弹框-->
+<div class="modal fade" id="addDialog" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">添加用户</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row-fluid">
+                    <div class="row">
+                        <div class="col-md-8 col-sm-offset-2 text-center">
+                            <form method="post" id="addForm">
+                                <div class="form-group">
+                                    <div class="input-group">
+							<span class="input-group-addon"> <span
+                                    class="glyphicon glyphicon-user"></span>
+							</span> <input type="text" name="username" placeholder="请输入登录账户名"
+                                           class="form-control"/>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <div class="input-group">
+							<span class="input-group-addon"> <span
+                                    class="glyphicon glyphicon-eye-close"></span>
+							</span> <input type="password" name="password" class="form-control"
+                                           placeholder="请输入新密码"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="input-group">
+							<span class="input-group-addon"> <span
+                                    class="glyphicon glyphicon-eye-close"></span>
+							</span> <input type="password" name="password2" class="form-control"
+                                           placeholder="再次输入新密码"/>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="PageJS.addForm()">确定添加</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--修改用户弹框-->
+<div class="modal fade" id="updateDialog" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">修改用户密码</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row-fluid">
+                    <div class="row">
+                        <div class="col-md-8 col-sm-offset-2 text-center">
+                            <form method="post" id="updateForm">
+
+                                <input type="hidden" name="id">
+                                <div class="form-group">
+                                    <div class="input-group">
+							<span class="input-group-addon"> <span
+                                    class="glyphicon glyphicon-user"></span>
+							</span> <input type="text" name="username" readonly
+                                           class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+							<span class="input-group-addon"> <span
+                                    class="glyphicon glyphicon-eye-close"></span>
+							</span> <input type="password" name="password" class="form-control"
+                                           placeholder="请输入新密码"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="input-group">
+							<span class="input-group-addon"> <span
+                                    class="glyphicon glyphicon-eye-close"></span>
+							</span> <input type="password" name="password2" class="form-control"
+                                           placeholder="请再次输入新密码"/>
+                                    </div>
+                                </div>
+
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="PageJS.editForm()">确定修改</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script>
+    var loadingDia, vm;
+    var grid_selector = "#grid-table";
+
+    PageJS = {
+
+        showLoading: function () {
+            loadingDia = bootbox.dialog({
+                title: '操作执行中，请稍后',
+                message: '<p><i class="fa fa-spin fa-spinner"></i> Loading...</p>',
+                size: 'small',
+                closeButton: false
+            });
+
+        },
+
+
+        hideLoading: function () {
+            loadingDia.modal("hide");
+        },
+
+
+        formatTime: function (value, row, index) {
+
+            return $.formatDateTime('yy-mm-dd hh:ii:ss', new Date(value));
+
+        },
+        init: function () {
+
+            xaja_config.setGlobalToken();
+
+
+            var pager_selector = "#grid-pager";
+            var parent_column = $(grid_selector).closest('[class*="col-"]');
+
+
+            $(grid_selector).jqGrid({
+                multiselect: false,
+                subGrid: true,
+                autowidth: true,
+                subGridOptions: {
+                    plusicon: "ace-icon fa fa-plus center bigger-110 blue",
+                    minusicon: "ace-icon fa fa-minus center bigger-110 blue",
+                    openicon: "ace-icon fa fa-chevron-right center orange"
+                },
+                height: 'auto',
+                url: AVRGlobal.apiUrl + "/user/list",
+                editurl: AVRGlobal.apiUrl + "/user/oper",
+                datatype: "json",
+                colNames: ['ID', '用户名', '创建时间', '用户状态', ' '],
+                colModel: [
+                    {name: 'id', index: 'id', width: 10, key: true, editable: true, hidden: true},
+                    {
+                        name: 'username',
+                        index: 'username',
+                        width: 150,
+                        editable: false,
+                        align: 'center',
+                        editrules: {required: true},
+                        edittype: "text",
+                        // editoptions: {size: "20", maxlength: "30"}
+                    },
+                    {
+                        name: 'gmtCreate',
+                        index: 'gmtCreate',
+                        width: 70,
+                        align: 'center',
+                        editable: false,
+                        //unformat: jqGridUtils.pickDate,
+                        formatter: jqGridUtils.timeFormat
+                    },
+                    {
+                        name: 'status',
+                        index: 'status',
+                        width: 90,
+                        align: 'center',
+                        editable: true,
+                        edittype: "select",
+                        editoptions: {value: "1:正常;0:禁止"},
+                        formatter: function (cellvalue, options, row) {
+                            if (cellvalue == 1) {
+                                return "正常"
+                            } else if (cellvalue == 0) {
+                                return "禁止"
+                            }
+                        }
+                    },
+
+
+                    {
+                        name: 'myac', index: '', width: 80, fixed: true, sortable: false, resize: false,
+                        // formatter: function (cellvalue, options, rowObject) {
+                        //     return '<div class="hidden-sm hidden-xs btn-group">' +
+                        //
+                        //         '<button class="btn btn-xs btn-info" onclick="PageJS.editRow(' + rowObject.id + ')">' +
+                        //         '	<i class="ace-icon fa fa-pencil bigger-120"></i>' +
+                        //         '</button>' +
+                        //         '<button class="btn btn-xs btn-danger" onclick="PageJS.deleteRow(' + rowObject.id + ')">' +
+                        //         '	<i class="ace-icon fa fa-trash-o bigger-120"></i>' +
+                        //         '</button>' +
+                        //         '</div>';
+                        // },
+                        formatter: 'actions',
+                        formatoptions: {
+                            keys: true,
+                            delOptions: {
+                                recreateForm: true,
+                                beforeShowForm: jqGridUtils.beforeDeleteCallback,
+                                afterComplete: function (data) {
+                                    data = data.responseJSON;
+                                    if (data.code != 0) {
+                                        swal(
+                                            '操作结果',
+                                            data.msg,
+                                            'error'
+                                        )
+                                    }
+                                }
+
+                            },
+                            onSuccess: function (data) {
+                                data = data.responseJSON;
+                                if (data.code == 0) {
+                                    swal(
+                                        '操作结果',
+                                        data.msg,
+                                        'success'
+                                    )
+
+                                    //重新加载表格数据
+                                    $(grid_selector).trigger('reloadGrid');
+
+
+                                } else {
+                                    swal(
+                                        '操作结果',
+                                        data.msg,
+                                        'error'
+                                    )
+                                }
+                            },
+
+
+                        }
+
+                    }
+                ],
+                viewrecords: true,
+                rowNum: 10,
+                rowList: [10, 20, 30],
+                pager: pager_selector,
+                altRows: true,
+                multiselect: true,
+                multiboxonly: true,
+
+                loadComplete: function () {
+                    var table = this;
+                    setTimeout(function () {
+                        jqGridUtils.styleCheckbox(table);
+                        jqGridUtils.updateActionIcons(table);
+                        jqGridUtils.updatePagerIcons(table);
+                        jqGridUtils.enableTooltips(table);
+                    }, 0);
+                },
+                jsonReader: {
+                    root: "data.rows",
+                    page: "data.page",
+                    total: "data.total",
+                    records: "data.records",
+                },
+                caption: "用户列表",
+
+
+            });
+
+
+            $(grid_selector).jqGrid('navGrid', pager_selector,
+                {
+                    edit: false,
+                    editicon: 'ace-icon fa fa-pencil blue',
+                    add: false,
+                    addicon: 'ace-icon fa fa-plus-circle purple',
+                    del: false,
+                    delicon: 'ace-icon fa fa-trash-o red',
+                    search: false,
+                    searchicon: 'ace-icon fa fa-search orange',
+                    refresh: true,
+                    refreshicon: 'ace-icon fa fa-refresh green',
+                    view: true,
+                    viewicon: 'ace-icon fa fa-search-plus grey',
+                },
+                {
+                    //edit record form
+                    //closeAfterEdit: true,
+                    //width: 700,
+                    recreateForm: true,
+                    beforeShowForm: function (e) {
+                        var form = $(e[0]);
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                        jqGridUtils.style_edit_form(form);
+                    }
+                },
+                {},
+                {
+                    //delete record form
+                    recreateForm: true,
+                    beforeShowForm: function (e) {
+                        var form = $(e[0]);
+                        if (form.data('styled')) return false;
+
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                        jqGridUtils.style_delete_form(form);
+
+                        form.data('styled', true);
+                    },
+                    onClick: function (e) {
+                        //alert(1);
+                    }
+                },
+                {
+                    //search form
+                    recreateForm: true,
+                    afterShowSearch: function (e) {
+                        var form = $(e[0]);
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                        jqGridUtils.style_search_form(form);
+
+                    },
+                    afterRedraw: function () {
+                        jqGridUtils.style_search_filters($(this));
+                    }
+                    ,
+                    multipleSearch: true,
+                    /**
+                     multipleGroup:true,
+                     showQuery: true
+                     */
+                },
+                {
+                    //view record form
+                    recreateForm: true,
+                    beforeShowForm: function (e) {
+                        var form = $(e[0]);
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                    }
+                }
+            ).navButtonAdd(pager_selector, {
+                caption: "修改密码",
+                buttonicon: "ace-icon fa fa-pencil blue",
+                onClickButton: function () {
+                    var id = $(grid_selector).jqGrid('getGridParam', 'selrow');
+                    if (id == null) {
+                        swal(
+                            '提示',
+                            '请选择一行数据',
+                            'error'
+                        )
+
+                        return;
+
+                    }
+
+                    var rowData = $(grid_selector).jqGrid('getRowData', id);
+                    FormUtils($("#updateForm")).exclude("password").autoLoadByName(rowData);
+                    //弹出
+                    $("#updateDialog").modal("show");
+                },
+                position: "first"
+            }).navButtonAdd(pager_selector, {
+                caption: "",
+                buttonicon: "ace-icon fa fa-plus-circle purple",
+                onClickButton: function () {
+
+
+
+
+                    //弹出
+                    $("#addDialog").modal("show");
+                },
+                position: "first"
+
+            });
+
+
+            // $(grid_selector)
+            //     .navGrid('#pager', {edit: false, add: false, del: false, search: false})
+            //     .navButtonAdd(pager_selector, {
+            //         caption: "Add",
+            //         buttonicon: "ui-icon-add",
+            //         onClickButton: function () {
+            //             alert("Adding Row");
+            //         },
+            //         position: "last"
+            //     });
+
+
+            var valiData = {
+                message: '无效的输入',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    username: {
+                        message: '姓名格式不正确',
+                        validators: {
+                            notEmpty: {
+                                message: '账户名不能为空'
+                            },
+                        }
+                    },
+                    password: {
+                        message: '密码无效',
+                        validators: {
+                            notEmpty: {
+                                message: '新密码不能为空'
+                            },
+
+                            regexp: {
+                                regexp: /^([a-zA-Z0-9]|[_]){5,16}$/,
+                                message: '密码是5-16个包含字母,数字和下划线的字符串'
+                            }
+                        }
+                    },
+
+                    password2: {
+                        message: '密码无效',
+                        validators: {
+                            notEmpty: {
+                                message: '新密码不能为空'
+                            },
+
+                            regexp: {
+                                regexp: /^([a-zA-Z0-9]|[_]){5,16}$/,
+                                message: '密码是5-16个包含字母,数字和下划线的串'
+                            },
+                            identical: {
+                                field: 'password',
+                                message: '*两次输入密码不一致'
+                            }
+                        }
+                    },
+
+                }
+            };
+
+            $('#addForm')
+                .bootstrapValidator(valiData);
+
+            $('#updateForm')
+                .bootstrapValidator(valiData);
+        },
+
+
+        deleteRow: function (rowId) {
+
+            var rowData = $(grid_selector).jqGrid('getRowData', rowId);
+
+
+            xaja("/user/oper").data({
+                id: rowId,
+                oper: 'del'
+            }).xWWWFormUrlencoded().success(function () {
+                $(grid_selector).trigger('reloadGrid');
+            }).confirm({
+                title: "确定要删除该用户"
+            }).post();
+
+        },
+
+        editForm: function () {
+            var data = $("#updateForm").data('bootstrapValidator');
+            if (data) {
+                // 修复记忆的组件不验证
+                data.validate();
+
+                if (!data.isValid()) {
+                    return false;
+                }
+            }
+
+            var data = $('#updateForm').serializeJson();
+            data.oper = "editPass";
+            xaja("/user/oper").data(data)
+                .xWWWFormUrlencoded().success(function () {
+                $('#updateDialog').modal("hide");
+
+                $(grid_selector).trigger('reloadGrid');
+
+
+            }).post();
+
+
+        },
+
+
+        addForm: function () {
+
+            var data = $("#addForm").data('bootstrapValidator');
+            if (data) {
+                // 修复记忆的组件不验证
+                data.validate();
+
+                if (!data.isValid()) {
+                    return false;
+                }
+            }
+
+
+            var data = $('#addForm').serializeJson();
+            data.oper = "add";
+            xaja("/user/oper").data(data)
+                .xWWWFormUrlencoded().success(function () {
+                $('#addForm').modal("hide");
+
+                $(grid_selector).trigger('reloadGrid');
+
+
+            }).confirm({
+                title: "确定要添加记录吗？"
+            }).post();
+
+
+        }
+
+
+    }
+</script>
+
+<script>
+
+    $(function () {
+        PageJS.init();
+    });
+</script>
+
+
+<script>
+
+    jqGridUtils = {
+        style_search_form: function (form) {
+            var dialog = form.closest('.ui-jqdialog');
+            var buttons = dialog.find('.EditTable')
+            buttons.find('.EditButton a[id*="_reset"]').addClass('btn btn-sm btn-info').find('.ui-icon').attr('class', 'ace-icon fa fa-retweet');
+            buttons.find('.EditButton a[id*="_query"]').addClass('btn btn-sm btn-inverse').find('.ui-icon').attr('class', 'ace-icon fa fa-comment-o');
+            buttons.find('.EditButton a[id*="_search"]').addClass('btn btn-sm btn-purple').find('.ui-icon').attr('class', 'ace-icon fa fa-search');
+        },
+        style_search_filters: function (form) {
+            form.find('.delete-rule').val('X');
+            form.find('.add-rule').addClass('btn btn-xs btn-primary');
+            form.find('.add-group').addClass('btn btn-xs btn-success');
+            form.find('.delete-group').addClass('btn btn-xs btn-danger');
+        },
+
+        styleCheckbox: function (table) {
+            /**
+             $(table).find('input:checkbox').addClass('ace')
+             .wrap('<label />')
+             .after('<span class="lbl align-top" />')
+
+
+             $('.ui-jqgrid-labels th[id*="_cb"]:first-child')
+             .find('input.cbox[type=checkbox]').addClass('ace')
+             .wrap('<label />').after('<span class="lbl align-top" />');
+             */
+        },
+
+        style_edit_form: function (form) {
+            //enable datepicker on "sdate" field and switches for "stock" field
+            form.find('input[name=sdate]').datepicker({format: 'yyyy-mm-dd', autoclose: true})
+
+            form.find('input[name=stock]').addClass('ace ace-switch ace-switch-5').after('<span class="lbl"></span>');
+            //don't wrap inside a label element, the checkbox value won't be submitted (POST'ed)
+            //.addClass('ace ace-switch ace-switch-5').wrap('<label class="inline" />').after('<span class="lbl"></span>');
+
+
+            //update buttons classes
+            var buttons = form.next().find('.EditButton .fm-button');
+            buttons.addClass('btn btn-sm').find('[class*="-icon"]').hide();//ui-icon, s-icon
+            buttons.eq(0).addClass('btn-primary').prepend('<i class="ace-icon fa fa-check"></i>');
+            buttons.eq(1).prepend('<i class="ace-icon fa fa-times"></i>')
+
+            buttons = form.next().find('.navButton a');
+            buttons.find('.ui-icon').hide();
+            buttons.eq(0).append('<i class="ace-icon fa fa-chevron-left"></i>');
+            buttons.eq(1).append('<i class="ace-icon fa fa-chevron-right"></i>');
+        },
+
+
+        updateActionIcons: function (table) {
+            /**
+             var replacement =
+             {
+                 'ui-ace-icon fa fa-pencil' : 'ace-icon fa fa-pencil blue',
+                 'ui-ace-icon fa fa-trash-o' : 'ace-icon fa fa-trash-o red',
+                 'ui-icon-disk' : 'ace-icon fa fa-check green',
+                 'ui-icon-cancel' : 'ace-icon fa fa-times red'
+             };
+             $(table).find('.ui-pg-div span.ui-icon').each(function(){
+						var icon = $(this);
+						var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+						if($class in replacement) icon.attr('class', 'ui-icon '+replacement[$class]);
+					})
+             */
+        },
+
+
+        style_delete_form: function (form) {
+            var buttons = form.next().find('.EditButton .fm-button');
+            buttons.addClass('btn btn-sm btn-white btn-round').find('[class*="-icon"]').hide();//ui-icon, s-icon
+            buttons.eq(0).addClass('btn-danger').prepend('<i class="ace-icon fa fa-trash-o"></i>');
+            buttons.eq(1).addClass('btn-default').prepend('<i class="ace-icon fa fa-times"></i>')
+        },
+
+        updatePagerIcons: function (table) {
+            var replacement =
+                {
+                    'ui-icon-seek-first': 'ace-icon fa fa-angle-double-left bigger-140',
+                    'ui-icon-seek-prev': 'ace-icon fa fa-angle-left bigger-140',
+                    'ui-icon-seek-next': 'ace-icon fa fa-angle-right bigger-140',
+                    'ui-icon-seek-end': 'ace-icon fa fa-angle-double-right bigger-140'
+                };
+            $('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function () {
+                var icon = $(this);
+                var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+
+                if ($class in replacement) icon.attr('class', 'ui-icon ' + replacement[$class]);
+            })
+        },
+
+        enableTooltips: function (table) {
+            $('.navtable .ui-pg-button').tooltip({container: 'body'});
+            $(table).find('.ui-pg-div').tooltip({container: 'body'});
+        },
+
+
+        beforeDeleteCallback: function () {
+
+        },
+        aceSwitch: function (cellvalue, options, cell) {
+            setTimeout(function () {
+                $(cell).find('input[type=checkbox]')
+                    .addClass('ace ace-switch ace-switch-5')
+                    .after('<span class="lbl"></span>');
+            }, 0);
+        },
+        pickDate: function (cellvalue, options, cell) {
+            setTimeout(function () {
+                $(cell).find('input[type=text]')
+                    .datepicker({format: 'yyyy-mm-dd', autoclose: true});
+            }, 0);
+        },
+
+        timeFormat: function (value, options, row) {
+
+            if (value) {
+                return $.formatDateTime('yy-mm-dd hh:ii:ss', new Date(value));
+
+            } else {
+                return "缺省";
+            }
+
+        },
+
+
+    }
+
+
+</script>
+
+</html>

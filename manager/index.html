@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>管理平台</title>
+    <meta name="keywords" content="HOME"/>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <link rel="stylesheet" href="../assets/font-awesome-4.7.0/css/font-awesome.min.css"/>
+
+    <link rel="shortcut icon" href="../assets/image/zjicm.ico" type="image/x-icon">
+
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- ace 样式 -->
+
+    <link rel="stylesheet" href="../assets/css/ace.min.css" class="ace-main-stylesheet" id="main-ace-style"/>
+    <link rel="stylesheet" href="../assets/css/ace-skins.min.css"/>
+
+    <link rel="stylesheet" href="../assets/css/ace-rtl.min.css"/>
+
+
+    <!--loading-->
+
+    <!-- ace settings handler -->
+
+    <script src="../assets/js/ace-extra.min.js"></script>
+
+
+    <script src="../assets/jquery/jquery.min.js"></script>
+
+
+    <script type="text/javascript">
+        if ("ontouchend" in document) document.write("<script src='../assets/jquery/jquery.mobile.custom.min.js'>" + "<" + "script>");
+    </script>
+    <script src="../assets/js/bootbox.min.js"></script>
+    <script src="../assets/js/typeahead-bs2.min.js"></script>
+    <script src="../assets/jquery/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="../assets/jquery/jquery.ui.touch-punch.min.js"></script>
+    <script src="../assets/jquery/jquery.slimscroll.min.js"></script>
+    <script src="../assets/jquery/jquery.timers.min.js"></script>
+
+    <script src="../assets/jquery/jquery.sparkline.min.js"></script>
+
+
+    <script src="../assets/jquery/jquery.cookie.js"></script>
+
+
+    <!-- ace scripts -->
+
+
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/ace-tab.js"></script>
+
+    <script src="../assets/js/ace-menu.js"></script>
+    <script src="../assets/js/acePlugin/ace-task.js"></script>
+
+    <!--<script src="../assets/js/acePlugin/bootstrap-tab.js"></script>-->
+    <!--<script src="../assets/js/acePlugin/sidebar-menu.js"></script>-->
+    <!--<link rel="stylesheet" href="../assets/js/acePlugin/boostrap-tab.css"/>-->
+    <!--<link rel="stylesheet" href="../assets/js/acePlugin/sidebar-menu.css"/>-->
+    <script src="../assets/common/extends.js"></script>
+    <script src="../assets/sweetalert/sweetalert2.all.min.js"></script>
+    <link href="../assets/sweetalert/sweetalert2.css" rel="stylesheet"/>
+    <style>
+        /**
+        拉开子菜单图标和文字的间距
+         */
+        .submenu .menu-text {
+            padding-left: 5px;
+
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+    </style>
+
+</head>
+
+
+<body class="no-skin">
+<div class="navbar navbar-default ace-save-state" id="navbar">
+    <div class="navbar-container ace-save-state" id="navbar-container">
+        <button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
+            <span class="sr-only">Toggle sidebar</span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+        </button>
+        <div class="navbar-header pull-left">
+            <a href="#" class="navbar-brand">
+
+                <small>
+                    <i class="fa fa-television"></i>
+                    视听节目收视研究系统 管理系统
+                </small>
+            </a>
+        </div>
+
+        <div class="navbar-buttons navbar-header pull-right" role="navigation">
+            <ul class="nav ace-nav">
+
+
+                <li class="light-blue dropdown-modal">
+                    <a data-toggle="dropdown" href="#" class="dropdown-toggle">
+                        <img class="nav-user-photo"/>
+                        <span class="user-info">
+									<small></small>
+								</span>
+                        <i class="ace-icon fa fa-caret-down"></i>
+                    </a>
+                    <ul
+                            class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+
+
+                        <li id="btn_user_info"><a href="#"> <i class="icon-user"></i> 个人资料
+                        </a></li>
+
+                        <li class="divider"></li>
+
+                        <li><a href="#" onclick="PageJS.logout()">
+                            <i class="icon-off"></i> 退出
+                        </a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<div class="main-container ace-save-state" id="main-container">
+
+    <div class="main-content">
+        <div class="main-container-inner">
+            <div class="ace-settings-container" id="ace-settings-container">
+                <div class="btn btn-app btn-xs btn-warning ace-settings-btn" id="ace-settings-btn">
+                    <i class="ace-icon fa fa-cog bigger-130"></i>
+                </div>
+
+                <div class="ace-settings-box clearfix" id="ace-settings-box">
+                    <div class="pull-left width-50">
+                        <div class="ace-settings-item">
+                            <div class="pull-left">
+                                <select id="skin-colorpicker" class="hide">
+                                    <option data-skin="no-skin" value="#438EB9">#438EB9</option>
+                                    <option data-skin="skin-1" value="#222A2D">#222A2D</option>
+                                    <option data-skin="skin-2" value="#C6487E">#C6487E</option>
+                                    <option data-skin="skin-3" value="#D0D0D0">#D0D0D0</option>
+                                </select>
+                            </div>
+                            <span>&nbsp; Choose Skin</span>
+                        </div>
+
+                        <div class="ace-settings-item">
+                            <input type="checkbox" class="ace ace-checkbox-2 ace-save-state"
+                                   id="ace-settings-navbar" autocomplete="off"/>
+                            <label class="lbl" for="ace-settings-navbar"> Fixed Navbar</label>
+                        </div>
+
+                        <div class="ace-settings-item">
+                            <input type="checkbox" class="ace ace-checkbox-2 ace-save-state"
+                                   id="ace-settings-sidebar" autocomplete="off"/>
+                            <label class="lbl" for="ace-settings-sidebar"> Fixed Sidebar</label>
+                        </div>
+
+                        <div class="ace-settings-item">
+                            <input type="checkbox" class="ace ace-checkbox-2 ace-save-state"
+                                   id="ace-settings-breadcrumbs" autocomplete="off"/>
+                            <label class="lbl" for="ace-settings-breadcrumbs"> Fixed Breadcrumbs</label>
+                        </div>
+
+                        <div class="ace-settings-item">
+                            <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-rtl"
+                                   autocomplete="off"/>
+                            <label class="lbl" for="ace-settings-rtl"> Right To Left (rtl)</label>
+                        </div>
+
+                        <div class="ace-settings-item">
+                            <input type="checkbox" class="ace ace-checkbox-2 ace-save-state"
+                                   id="ace-settings-add-container" autocomplete="off"/>
+                            <label class="lbl" for="ace-settings-add-container">
+                                Inside
+                                <b>.container</b>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="pull-left width-50">
+                        <div class="ace-settings-item">
+                            <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-hover"
+                                   autocomplete="off"/>
+                            <label class="lbl" for="ace-settings-hover"> Submenu on Hover</label>
+                        </div>
+
+                        <div class="ace-settings-item">
+                            <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-compact"
+                                   autocomplete="off"/>
+                            <label class="lbl" for="ace-settings-compact"> Compact Sidebar</label>
+                        </div>
+
+                        <div class="ace-settings-item">
+                            <input type="checkbox" class="ace ace-checkbox-2" id="ace-settings-highlight"
+                                   autocomplete="off"/>
+                            <label class="lbl" for="ace-settings-highlight"> Alt. Active Item</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar responsive ace-save-state" id="sidebar">
+
+
+                <div class="sidebar-shortcuts" id="sidebar-shortcuts">
+                    <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+
+                        <button class="btn btn-warning" type="button" onclick="PageJS.shotCut.open1()">
+                            <i class="ace-icon fa fa-dashboard"></i>
+                        </button>
+
+                        <button class="btn btn-success" type="button" onclick="PageJS.shotCut.open2()">
+                            <i class="ace-icon fa fa-tasks"></i>
+                        </button>
+
+                        <button class="btn btn-info" type="button" onclick="PageJS.shotCut.open3()">
+                            <i class="ace-icon fa fa-users"></i>
+                        </button>
+
+
+                        <button class="btn btn-danger" type="button" onclick="PageJS.shotCut.open4()">
+                            <i class="ace-icon fa fa-info-circle"></i>
+                        </button>
+                    </div>
+
+                    <div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+                        <span class="btn btn-success"></span>
+
+                        <span class="btn btn-info"></span>
+
+                        <span class="btn btn-warning"></span>
+
+                        <span class="btn btn-danger"></span>
+                    </div>
+                </div><!-- /.sidebar-shortcuts -->
+                <ul id="menu" class="nav nav-list"></ul>
+
+
+                <div class="sidebar-collapse" id="sidebar-collapse">
+                    <i class="icon-double-angle-left"
+                       data-icon1="icon-double-angle-left"
+                       data-icon2="icon-double-angle-right"></i>
+                </div>
+
+
+            </div>
+
+            <div class="main-content">
+
+                <div class="row" style="margin: 0px;">
+                    <!-- 适应各种屏幕大小的12 -->
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
+                         style="margin: 0px 0px 0px 1px; padding: 0px;">
+
+                        <!-- 主要内容区域 -->
+
+                        <div id="main-tab">
+                        </div>
+
+
+                        <!--<ul class="nav nav-tabs" role="tablist">-->
+                        <!--<li class="active"><a href="/html/manager/console.html" role="tab" data-toggle="tab">首页</a>-->
+                        <!--</li>-->
+                        <!--</ul>-->
+                        <!--<div class="tab-content">-->
+                        <!--<div role="tabpanel" class="tab-pane active" id="Index">-->
+                        <!--</div>-->
+                        <!--</div>-->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+        <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+    </a>
+</div>
+
+
+<script src="../assets/jquery/jquery.formatDateTime.min.js"></script>
+
+<script type="text/javascript">
+    PageJS = {
+
+
+        menuData: function () {
+
+            return [{
+                id: '1',
+                title: '首页',
+                icon: 'menu-icon fa fa-home',
+                url: '',
+                children: [{
+                    id: 'page_console',
+                    title: '控制台',
+                    icon: 'fa fa-dashboard',
+                    url: 'console.html',
+                }]
+            }, {
+                id: '12',
+                title: '任务',
+                icon: 'menu-icon fa fa-tasks',
+                url: '',
+                children: [{
+                    id: 'page_stat',
+                    title: '任务管理',
+                    icon: 'fa fa-wrench',
+                    url: 'task.html',
+                }]
+
+
+            }, {
+                id: '11',
+                title: '用户管理',
+                icon: 'menu-icon fa fa-group',
+                url: '',
+                children: [{
+                    id: 'page_admin_user',
+                    icon: 'fa fa-wrench',
+                    title: '用户管理',
+                    url: 'user.html'
+                }]
+            },
+                {
+                    id: '10',
+                    title: '其他',
+                    icon: 'menu-icon fa fa-cog',
+                    url: '',
+                    children: [{
+                        id: 'page_store_info',
+                        icon: 'fa fa-info-circle',
+                        title: '版本信息',
+                        url: 'version.html'
+                    }]
+                }];
+
+        },
+
+        shotCut: {
+            open1: function () {
+                $("#main-tab").aceaddtab({
+                    id: 'page_console',
+                    title: '控制台',
+                    icon: 'fa fa-dashboard',
+                    url: 'console.html',
+                });
+            },
+
+
+            open2: function () {
+                $("#main-tab").aceaddtab({
+                    id: 'page_stat',
+                    title: '任务管理',
+                    icon: 'fa fa-wrench',
+                    url: 'task.html',
+                });
+            },
+
+            open3: function () {
+                $("#main-tab").aceaddtab({
+                    id: 'page_admin_user',
+                    icon: 'fa fa-wrench',
+                    title: '用户管理',
+                    url: 'user.html'
+                });
+            },
+            open4: function () {
+                $("#main-tab").aceaddtab({
+                    icon: 'fa fa-info-circle',
+                    title: '版本信息',
+                    url: 'version.html'
+                });
+            },
+
+        },
+
+        showUserInfo: function () {
+
+
+            xaja("/auth/getCurrentUserInfo").success(function (data) {
+                $(".user-info").html("<small>欢迎光临,</small>" + data);
+
+                $(".nav-user-photo").attr("src", "../assets/image/zjicm.png");
+
+
+                $("#btn_user_info").click(function () {
+                    bootbox.alert({
+                        message: "暂无",
+
+                    });
+
+                });
+
+            }).get();
+
+
+        },
+
+        logout: function () {
+
+
+            xaja("/auth/logout").success(function () {
+                window.location.replace("login.html");
+
+            }).confirm({
+                title: "确定要注销当前用户"
+            }).get();
+
+
+        },
+
+
+        init: function () {
+            xaja_config.setGlobalToken();
+
+            $('#menu').acemenu({
+                menuTabID: "main-tab",
+                data: PageJS.menuData(),
+            });
+
+
+            this.showUserInfo();
+
+
+            try {
+                ace.settings.loadState('main-container')
+            } catch (e) {
+            }
+            try {
+                ace.settings.loadState('sidebar')
+            } catch (e) {
+            }
+
+        },
+
+
+    }
+
+</script>
+
+
+<script type="text/javascript">
+    PageJS.init();
+</script>
+<script>
+    // var websocket = null;
+    // if ('WebSocket' in window) {
+    //     websocket = new WebSocket('ws://localhost:8080/webSocket');
+    // } else {
+    //     alert('该浏览器不支持websocket!');
+    // }
+    //
+    // websocket.onopen = function (event) {
+    //     console.log('建立连接');
+    // }
+    //
+    // websocket.onclose = function (event) {
+    //     console.log('连接关闭');
+    // }
+    //
+    // websocket.onmessage = function (event) {
+    //     console.log('收到消息:' + event.data)
+    //     //弹窗提醒, 播放音乐
+    //
+    //
+    //     // document.getElementById('notice').play();
+    // }
+    //
+    // websocket.onerror = function () {
+    //     alert('websocket通信发生错误！');
+    // }
+    //
+    // window.onbeforeunload = function () {
+    //     websocket.close();
+    // }
+
+</script>
+<script src="../assets/js/ace.min.js"></script>
+<script src="../assets/js/ace-elements.min.js"></script>
+<script src="../assets/toastr-master/build/toastr.min.js"></script>
+<link href="../assets/toastr-master/build/toastr.min.css" rel="stylesheet"/>
+</body>
+</html>
+

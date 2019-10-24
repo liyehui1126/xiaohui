@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>任务管理</title>
+
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../assets/Guriddo_jqGrid_JS_5.3.0/css/ui.jqgrid.min.css"/>
+    <link href="../assets/css/ace.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../assets/css/jquery-ui.min.css">
+
+
+    <link rel="stylesheet" href="../assets/font-awesome-4.7.0/css/font-awesome.min.css"/>
+
+    <script src="../assets/jquery/jquery.min.js"></script>
+    <script src="../assets/jquery/jquery.formatDateTime.min.js"></script>
+    <script src="../assets/js/ace.min.js"></script>
+
+    <script src="../assets/js/ace-elements.min.js"></script>
+
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+
+
+    <script src="../assets/common/extends.js"></script>
+
+
+    <script src="../assets/Guriddo_jqGrid_JS_5.3.0/js/jquery.jqGrid.min.js"></script>
+    <script src="../assets/Guriddo_jqGrid_JS_5.3.0/js/i18n/grid.locale-cn.js"></script>
+
+    <script src="../assets/sweetalert/sweetalert2.all.min.js"></script>
+    <link href="../assets/sweetalert/sweetalert2.css" rel="stylesheet"/>
+
+
+    <style>
+
+
+        body {
+            background-color: #ffffff;
+        }
+
+        .ui-jqgrid .ui-jqgrid-htable th div {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12">
+            <table id="grid-table">
+            </table>
+            <div id="grid-pager"></div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+
+<script>
+    var loadingDia, vm;
+    PageJS = {
+
+        showLoading: function () {
+            loadingDia = bootbox.dialog({
+                title: '操作执行中，请稍后',
+                message: '<p><i class="fa fa-spin fa-spinner"></i> Loading...</p>',
+                size: 'small',
+                closeButton: false
+            });
+
+        },
+
+
+        hideLoading: function () {
+            loadingDia.modal("hide");
+        },
+
+
+        formatTime: function (value, row, index) {
+
+            return $.formatDateTime('yy-mm-dd hh:ii:ss', new Date(value));
+
+        },
+        init: function () {
+            xaja_config.setGlobalToken();
+
+            var grid_selector = "#grid-table";
+
+            var pager_selector = "#grid-pager";
+            var parent_column = $(grid_selector).closest('[class*="col-"]');
+
+            $(grid_selector).jqGrid({
+                subGrid: true,
+                autowidth: true,
+                subGridOptions: {
+                    plusicon: "ace-icon fa fa-plus center bigger-110 blue",
+                    minusicon: "ace-icon fa fa-minus center bigger-110 blue",
+                    openicon: "ace-icon fa fa-chevron-right center orange"
+                },
+                height: 'auto',
+                url: AVRGlobal.apiUrl + "/task/list",
+                editurl: AVRGlobal.apiUrl + "/task/oper",
+                datatype: "json",
+                colNames: ['ID', '任务名称', '创建时间', '任务状态', '日志路径', '节目列表文件路径', ' '],
+                colModel: [
+                    {name: 'id', index: 'id', width: 10, key: true, editable: true, hidden: true},
+                    {
+                        name: 'taskName',
+                        index: 'taskName',
+                        width: 150,
+                        editable: true,
+                        align: 'center',
+                        editrules: {required: true},
+                        edittype: "text",
+                        // editoptions: {size: "20", maxlength: "30"}
+                    },
+                    {
+                        name: 'gmtCreate',
+                        index: 'gmtCreate',
+                        width: 70,
+                        align: 'center',
+                        editable: false,
+                        //unformat: jqGridUtils.pickDate,
+                        formatter: jqGridUtils.timeFormat
+                    },
+                    {
+                        name: 'taskStatus',
+                        index: 'taskStatus',
+                        width: 90,
+                        align: 'center',
+                        editable: true,
+                        edittype: "select",
+                        editoptions: {value: "1:正在执行;0:停止执行"},
+                        formatter: function (cellvalue, options, row) {
+                            if (cellvalue == 1) {
+                                return "正在执行"
+                            } else if (cellvalue == 0) {
+                                return "停止执行"
+                            }
+                        }
+                    },
+                    {
+                        name: 'logPath',
+                        index: 'logPath',
+                        width: 150,
+                        editable: true,
+                        editrules: {required: true},
+                        edittype: "text",
+                        align: 'center',
+                    },
+                    {
+                        name: 'tvListPath',
+                        index: 'tvListPath',
+                        width: 150,
+                        editable: true,
+                        editrules: {required: true},
+                        edittype: "text",
+                        align: 'center',
+                    },
+                    {
+                        name: 'myac', index: '', width: 80, fixed: true, sortable: false, resize: false,
+                        formatter: 'actions',
+                        formatoptions: {
+                            keys: true,
+
+                            delOptions: {
+                                recreateForm: true,
+                                beforeShowForm: jqGridUtils.beforeDeleteCallback,
+                                afterComplete: function (data) {
+                                    data = data.responseJSON;
+                                    if (data.code != 0) {
+                                        swal(
+                                            '操作结果',
+                                            data.msg,
+                                            'error'
+                                        )
+                                    }
+                                }
+
+                            },
+
+                            editformbutton: false,
+                            onSuccess: function (data) {
+                                data = data.responseJSON;
+                                if (data.code == 0) {
+                                    swal(
+                                        '操作结果',
+                                        data.msg,
+                                        'success'
+                                    )
+
+                                    //重新加载表格数据
+                                    $(grid_selector).trigger('reloadGrid');
+
+
+                                } else {
+                                    swal(
+                                        '操作结果',
+                                        data.msg,
+                                        'error'
+                                    )
+                                }
+                            },
+                            // editbutton: true,(这个将会弹框来编辑)
+
+                        }
+                    }
+                ],
+                viewrecords: true,
+                rowNum: 10,
+                rowList: [10, 20, 30],
+                pager: pager_selector,
+                altRows: true,
+                multiselect: true,
+                multiboxonly: true,
+
+                loadComplete: function () {
+                    var table = this;
+                    setTimeout(function () {
+                        jqGridUtils.styleCheckbox(table);
+                        jqGridUtils.updateActionIcons(table);
+                        jqGridUtils.updatePagerIcons(table);
+                        jqGridUtils.enableTooltips(table);
+                    }, 0);
+                },
+                jsonReader: {
+                    root: "data.rows",
+                    page: "data.page",
+                    total: "data.total",
+                    records: "data.records",
+                },
+
+
+                subGridRowExpanded: function (subgridDivId, rowId) {
+                    currentSelectGroup = rowId;
+                    currentSelectTable = subgridDivId + "_t";
+                    var subgridTableId = subgridDivId + "_t";
+                    var subgridPagerId = subgridDivId + "_p";
+
+                    $("#" + subgridDivId).html("<table id='" + subgridTableId + "'></table>" + "<div id='" + subgridPagerId + "'></div>");
+                    $("#" + subgridTableId).jqGrid({
+                        // width: '500px',
+                        jsonReader: {
+                            root: "data.rows",
+                            page: "data.page",
+                            total: "data.total",
+                            records: "data.records",
+                        },
+                        pager: $("#" + subgridPagerId),
+                        autowidth: true,
+                        datatype: "json",
+                        url: AVRGlobal.apiUrl + "/task/listById?id=" + rowId,
+                        colNames: ['日志数量', '开始时间', '结束时间', ' '],
+                        colModel: [
+                            {
+                                name: 'logCount',
+                                align: 'center',
+                                editable: false,
+                            },
+                            {
+                                name: 'sTime',
+                                align: 'center',
+                                editable: false,
+                                formatter: jqGridUtils.timeFormat
+                            },
+                            {
+                                name: 'eTime',
+                                align: 'center',
+                                editable: false,
+                                formatter: jqGridUtils.timeFormat
+                            },
+                            {
+                                name: 'myac', index: '', width: 80, fixed: true, sortable: false, resize: false,
+                                formatter: 'actions',
+                                formatoptions: {
+                                    editbutton: false,
+                                    keys: true,
+                                    delOptions: {recreateForm: true, beforeShowForm: jqGridUtils.beforeDeleteCallback},
+                                }
+                            }
+
+                        ],
+                        loadComplete: function () {
+                            var table = this;
+                            setTimeout(function () {
+                                jqGridUtils.styleCheckbox(table);
+                                jqGridUtils.updateActionIcons(table);
+                                jqGridUtils.updatePagerIcons(table);
+                                jqGridUtils.enableTooltips(table);
+                            }, 0);
+                        },
+                    });
+
+
+                    // $("#" + subgridTableId).jqGrid('navGrid', "#" + subgridPagerId,
+                    //     { 	//navbar options
+                    //         edit: false,
+                    //         editicon: 'ace-icon fa fa-pencil blue',
+                    //         add: false,
+                    //         addicon: 'ace-icon fa fa-plus-circle purple',
+                    //         del: false,
+                    //         delicon: 'ace-icon fa fa-trash-o red',
+                    //         search: false,
+                    //         searchicon: 'ace-icon fa fa-search orange',
+                    //         refresh: true,
+                    //         refreshicon: 'ace-icon fa fa-refresh green',
+                    //         view: true,
+                    //         viewicon: 'ace-icon fa fa-search-plus grey',
+                    //     },
+                    //     {
+                    //         //edit record form
+                    //         //closeAfterEdit: true,
+                    //         //width: 700,
+                    //         recreateForm: true,
+                    //         beforeShowForm: function (e) {
+                    //             var form = $(e[0]);
+                    //             form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                    //             jqGridUtils.style_edit_form(form);
+                    //         }
+                    //     },
+                    //     {
+                    //         //new record form
+                    //         //width: 700,
+                    //         closeAfterAdd: true,
+                    //         recreateForm: true,
+                    //         viewPagerButtons: false,
+                    //         onClickButton: function () {
+                    //
+                    //             alert("Adding Row");
+                    //
+                    //         },
+                    //         beforeShowForm: function (e) {
+                    //             var form = $(e[0]);
+                    //             form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
+                    //                 .wrapInner('<div class="widget-header" />')
+                    //             jqGridUtils.style_edit_form(form);
+                    //         }
+                    //     },
+                    //     {
+                    //         //delete record form
+                    //         recreateForm: true,
+                    //         beforeShowForm: function (e) {
+                    //             var form = $(e[0]);
+                    //             if (form.data('styled')) return false;
+                    //
+                    //             form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                    //             style_delete_form(form);
+                    //
+                    //             form.data('styled', true);
+                    //         },
+                    //         onClick: function (e) {
+                    //             //alert(1);
+                    //         }
+                    //     },
+                    //     {
+                    //         //search form
+                    //         recreateForm: true,
+                    //         afterShowSearch: function (e) {
+                    //             var form = $(e[0]);
+                    //             form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                    //             jqGridUtils.style_search_form(form);
+                    //
+                    //         },
+                    //         afterRedraw: function () {
+                    //             jqGridUtils.style_search_filters($(this));
+                    //         }
+                    //         ,
+                    //         multipleSearch: true,
+                    //         /**
+                    //          multipleGroup:true,
+                    //          showQuery: true
+                    //          */
+                    //     },
+                    //     {
+                    //         //view record form
+                    //         recreateForm: true,
+                    //         beforeShowForm: function (e) {
+                    //             var form = $(e[0]);
+                    //             form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                    //         }
+                    //     }
+                    // );
+
+
+                },
+                caption: "任务列表",
+
+
+            });
+
+
+            $(grid_selector).jqGrid('navGrid', pager_selector,
+                {
+                    edit: false,
+                    editicon: 'ace-icon fa fa-pencil blue',
+                    add: true,
+                    addicon: 'ace-icon fa fa-plus-circle purple',
+                    del: false,
+                    delicon: 'ace-icon fa fa-trash-o red',
+                    search: false,
+                    searchicon: 'ace-icon fa fa-search orange',
+                    refresh: true,
+                    refreshicon: 'ace-icon fa fa-refresh green',
+                    view: true,
+                    viewicon: 'ace-icon fa fa-search-plus grey',
+                },
+                {
+                    //edit record form
+                    //closeAfterEdit: true,
+                    //width: 700,
+                    recreateForm: true,
+                    beforeShowForm: function (e) {
+                        var form = $(e[0]);
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                        jqGridUtils.style_edit_form(form);
+                    }
+                },
+                {
+                    //new record form
+                    //width: 700,
+                    //clearAfterAdd: true,
+                    closeAfterAdd: true,
+                   // recreateForm: false,
+                    viewPagerButtons: false,
+                    // beforeShowForm: function (e) {
+                    //     //var form = $(e[0]);
+                    //     // form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
+                    //     //     .wrapInner('<div class="widget-header" />')
+                    //     //jqGridUtils.style_edit_form(form);
+                    // },
+
+                    afterComplete: function (data) {
+                        data = data.responseJSON;
+                        if (data.code != 0) {
+                            swal(
+                                '操作结果',
+                                data.msg,
+                                'error'
+                            )
+                        } else {
+                            //关闭窗口
+                        }
+                    },
+                    afterSubmit: function (data) {
+                        data = data.responseJSON;
+
+                        if (data.code != 0) {
+                            return [false, data.msg, ''];
+
+                        } else {
+                            return [true, '', ''];
+
+                        }
+                    }
+                },
+                {
+                    //delete record form
+                    recreateForm: true,
+                    beforeShowForm: function (e) {
+                        var form = $(e[0]);
+                        if (form.data('styled')) return false;
+
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                        jqGridUtils.style_delete_form(form);
+
+                        form.data('styled', true);
+                    },
+                    onClick: function (e) {
+                        //alert(1);
+                    }
+                },
+                {
+                    //search form
+                    recreateForm: true,
+                    afterShowSearch: function (e) {
+                        var form = $(e[0]);
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                        jqGridUtils.style_search_form(form);
+
+                    },
+                    afterRedraw: function () {
+                        jqGridUtils.style_search_filters($(this));
+                    }
+                    ,
+                    multipleSearch: true,
+                    /**
+                     multipleGroup:true,
+                     showQuery: true
+                     */
+                },
+                {
+                    //view record form
+                    recreateForm: true,
+                    beforeShowForm: function (e) {
+                        var form = $(e[0]);
+                        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                    }
+                }
+            );
+
+
+            // $(grid_selector).jqGrid('saveRow', rowid,
+            //     {
+            //         successfunc: function (response) {
+            //             console.info(response);
+            //             return true;
+            //         }
+            //     })
+
+
+        },
+
+
+    }
+</script>
+
+<script>
+
+    $(function () {
+        PageJS.init();
+    });
+</script>
+
+
+<script>
+
+    jqGridUtils = {
+        style_search_form: function (form) {
+            var dialog = form.closest('.ui-jqdialog');
+            var buttons = dialog.find('.EditTable')
+            buttons.find('.EditButton a[id*="_reset"]').addClass('btn btn-sm btn-info').find('.ui-icon').attr('class', 'ace-icon fa fa-retweet');
+            buttons.find('.EditButton a[id*="_query"]').addClass('btn btn-sm btn-inverse').find('.ui-icon').attr('class', 'ace-icon fa fa-comment-o');
+            buttons.find('.EditButton a[id*="_search"]').addClass('btn btn-sm btn-purple').find('.ui-icon').attr('class', 'ace-icon fa fa-search');
+        },
+        style_search_filters: function (form) {
+            form.find('.delete-rule').val('X');
+            form.find('.add-rule').addClass('btn btn-xs btn-primary');
+            form.find('.add-group').addClass('btn btn-xs btn-success');
+            form.find('.delete-group').addClass('btn btn-xs btn-danger');
+        },
+
+        styleCheckbox: function (table) {
+            /**
+             $(table).find('input:checkbox').addClass('ace')
+             .wrap('<label />')
+             .after('<span class="lbl align-top" />')
+
+
+             $('.ui-jqgrid-labels th[id*="_cb"]:first-child')
+             .find('input.cbox[type=checkbox]').addClass('ace')
+             .wrap('<label />').after('<span class="lbl align-top" />');
+             */
+        },
+
+        style_edit_form: function (form) {
+            //enable datepicker on "sdate" field and switches for "stock" field
+            form.find('input[name=sdate]').datepicker({format: 'yyyy-mm-dd', autoclose: true})
+
+            form.find('input[name=stock]').addClass('ace ace-switch ace-switch-5').after('<span class="lbl"></span>');
+            //don't wrap inside a label element, the checkbox value won't be submitted (POST'ed)
+            //.addClass('ace ace-switch ace-switch-5').wrap('<label class="inline" />').after('<span class="lbl"></span>');
+
+
+            //update buttons classes
+            var buttons = form.next().find('.EditButton .fm-button');
+            buttons.addClass('btn btn-sm').find('[class*="-icon"]').hide();//ui-icon, s-icon
+            buttons.eq(0).addClass('btn-primary').prepend('<i class="ace-icon fa fa-check"></i>');
+            buttons.eq(1).prepend('<i class="ace-icon fa fa-times"></i>')
+
+            buttons = form.next().find('.navButton a');
+            buttons.find('.ui-icon').hide();
+            buttons.eq(0).append('<i class="ace-icon fa fa-chevron-left"></i>');
+            buttons.eq(1).append('<i class="ace-icon fa fa-chevron-right"></i>');
+        },
+
+
+        updateActionIcons: function (table) {
+            /**
+             var replacement =
+             {
+                 'ui-ace-icon fa fa-pencil' : 'ace-icon fa fa-pencil blue',
+                 'ui-ace-icon fa fa-trash-o' : 'ace-icon fa fa-trash-o red',
+                 'ui-icon-disk' : 'ace-icon fa fa-check green',
+                 'ui-icon-cancel' : 'ace-icon fa fa-times red'
+             };
+             $(table).find('.ui-pg-div span.ui-icon').each(function(){
+						var icon = $(this);
+						var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+						if($class in replacement) icon.attr('class', 'ui-icon '+replacement[$class]);
+					})
+             */
+        },
+
+
+        style_delete_form: function (form) {
+            var buttons = form.next().find('.EditButton .fm-button');
+            buttons.addClass('btn btn-sm btn-white btn-round').find('[class*="-icon"]').hide();//ui-icon, s-icon
+            buttons.eq(0).addClass('btn-danger').prepend('<i class="ace-icon fa fa-trash-o"></i>');
+            buttons.eq(1).addClass('btn-default').prepend('<i class="ace-icon fa fa-times"></i>')
+        },
+
+        updatePagerIcons: function (table) {
+            var replacement =
+                {
+                    'ui-icon-seek-first': 'ace-icon fa fa-angle-double-left bigger-140',
+                    'ui-icon-seek-prev': 'ace-icon fa fa-angle-left bigger-140',
+                    'ui-icon-seek-next': 'ace-icon fa fa-angle-right bigger-140',
+                    'ui-icon-seek-end': 'ace-icon fa fa-angle-double-right bigger-140'
+                };
+            $('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function () {
+                var icon = $(this);
+                var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+
+                if ($class in replacement) icon.attr('class', 'ui-icon ' + replacement[$class]);
+            })
+        },
+
+        enableTooltips: function (table) {
+            $('.navtable .ui-pg-button').tooltip({container: 'body'});
+            $(table).find('.ui-pg-div').tooltip({container: 'body'});
+        },
+
+
+        beforeDeleteCallback: function () {
+
+        },
+        aceSwitch: function (cellvalue, options, cell) {
+            setTimeout(function () {
+                $(cell).find('input[type=checkbox]')
+                    .addClass('ace ace-switch ace-switch-5')
+                    .after('<span class="lbl"></span>');
+            }, 0);
+        },
+        pickDate: function (cellvalue, options, cell) {
+            setTimeout(function () {
+                $(cell).find('input[type=text]')
+                    .datepicker({format: 'yyyy-mm-dd', autoclose: true});
+            }, 0);
+        },
+
+        timeFormat: function (value, options, row) {
+
+            if (value) {
+                return $.formatDateTime('yy-mm-dd hh:ii:ss', new Date(value));
+
+            } else {
+                return "缺省";
+            }
+
+        },
+
+
+    }
+
+
+</script>
+
+</html>
